@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ordinal from 'ordinal-numbers'
+import GameStart from './GameStart';
+import GamePlay from './GamePlay';
 import './index.css';
 
 const initState = {
@@ -29,7 +30,6 @@ class App extends Component {
   constructor() {
     super();
     this.state = initState;
-    this.handleNewNumber = this.handleNewNumber.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleGuess = this.handleGuess.bind(this);
     this.handleReset = this.handleReset.bind(this);
@@ -103,34 +103,27 @@ class App extends Component {
   render() {
     return (
       <div id="container">
-      { !this.state.game.inProgress ? (
-        <section id="gamestart">
-          <h1>Start Game</h1>
-          <div><button onClick={()=>{ this.handleNewNumber(this.state.game.range.standard); }}>Standard</button> <button onClick={()=>{ this.handleNewNumber(this.state.game.range.expert); }}>Expert</button></div>
-        </section>
-        ) : (
-        <section id="inprogress">
-          <h1>Game On!</h1>
-          { this.state.game.gamesPlayed > 1 ? (
-            <p>This is your {ordinal(this.state.game.gamesPlayed)} game and your best score so far is {this.state.game.highScore[this.state.game.currentGame.currentLevel]} tries at the {this.state.game.currentGame.currentLevel} level.</p>
+        { !this.state.game.inProgress ? (
 
-            ) : (
-            <p>This is your {ordinal(this.state.game.gamesPlayed)} game. Good luck!</p>
-          )}
-          <div>
-            <label htmlFor="guess">Guess a number: <input type="text" id="guess" onChange={this.handleChange} value={this.state.game.currentGame.currentGuess} /></label>
-            <button onClick={this.handleGuess}>Submit</button>
-          </div>
-          <p id="message">{this.state.game.currentGame.currentMessage}</p>
-          { this.state.game.currentGame.offerPlayAgain ? (
-            <button id="playagain" onClick={this.handleReset}>Play Again</button>
-          ) : (
-            <div>
-              <h2 id="guesses"># of guesses: {this.state.game.currentGame.guesses}</h2>
-              <button id="reset" onClick={this.handleReset}>I quit. Reset!</button>
-            </div>
-          )}
-        </section>
+          <GameStart
+            standardStart={()=>{ this.handleNewNumber(this.state.game.range.standard); }}
+            expertStart={()=>{ this.handleNewNumber(this.state.game.range.expert); }}
+          />
+
+        ) : (
+
+          <GamePlay
+            gamesPlayed={this.state.game.gamesPlayed}
+            highScore={this.state.game.highScore[this.state.game.currentGame.currentLevel]}
+            currentLevel={this.state.game.currentGame.currentLevel}
+            handleChange={this.handleChange}
+            handleGuess={this.handleGuess}
+            currentGuess={this.state.game.currentGame.currentGuess}
+            currentMessage={this.state.game.currentGame.currentMessage}
+            handleReset={this.handleReset}
+            offerPlayAgain={this.state.game.currentGame.offerPlayAgain}
+            guessTotal={this.state.game.currentGame.guesses}
+          />
         )}
       </div>
     );
